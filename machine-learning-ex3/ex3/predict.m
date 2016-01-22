@@ -8,7 +8,7 @@ m = size(X, 1);
 num_labels = size(Theta2, 1);
 
 % You need to return the following variables correctly 
-p = zeros(size(X, 1), 1);
+% p = zeros(size(X, 1), 1);
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Complete the following code to make predictions using
@@ -21,12 +21,11 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
+X = [ones(m, 1) X];
 
-
-
-
-
-
+a2 = [ones(m, 1) sigmoid( X * Theta1' )]; % 5000 x 26 matrix, with +1 bias added
+a3 = sigmoid( a2 * Theta2' ); % 5000 x 10 matrix
+[foo,p] = max(a3, [], 2);
 
 
 % =========================================================================
