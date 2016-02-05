@@ -39,6 +39,20 @@ Theta2_grad = zeros(size(Theta2));
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
 %
+
+a1 = [ones(m,1) X]; % 5000 x 401 matrix
+z2 = a1 * Theta1';
+a2 = [ones(m,1) sigmoid(z2)]; % 5000 x 26 matrix
+hx = sigmoid( a2 * Theta2' ); % 5000 x 10 matrix
+
+Y = zeros(m, num_labels);
+for i=1:m,
+  Y( i, y(i) ) = 1;
+end
+
+J = sum(sum(-Y .* log(hx) - (1-Y).*log(1-hx))) / m ...
+        + lambda  * (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^ 2))) / (2*m);
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -53,6 +67,14 @@ Theta2_grad = zeros(size(Theta2));
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
+
+
+  delta3 =  hx - Y; % 5000 x 10  
+  delta2 = (delta3 * Theta2)(:, 2:end) .* sigmoidGradient(z2); % 5000 x 25  
+  
+  Theta1_grad =  1/m * delta2' * a1 ;
+  Theta2_grad =  1/m * delta3' * a2 ;
+ 
 %
 % Part 3: Implement regularization with the cost function and gradients.
 %
@@ -62,7 +84,12 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+Theta1_grad(:, 2:end) = Theta1_grad(:, 2:end) + lambda/m*Theta1(:, 2:end);
+Theta2_grad(:, 2:end) = Theta2_grad(:, 2:end) + lambda/m*Theta2(:, 2:end);
 
+
+
+grad = [Theta1_grad(:); Theta2_grad(:)];
 
 
 
